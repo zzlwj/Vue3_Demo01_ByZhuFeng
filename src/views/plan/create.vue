@@ -28,10 +28,11 @@
   </a-form>
 </template>
 <script>
-import { reactive, toRefs } from "vue"
+import { reactive, toRefs,onMounted,onUpdated,compile,computed } from "vue"
 import moment from 'moment';
+import {mapState} from 'vuex';
 export default {  
-  setup(){
+  setup(props,context){
     const state=reactive({
       form:{
         date:moment(Date.now()).format('YYYY-MM-DD'),
@@ -40,7 +41,7 @@ export default {
       }
     });
     const onSubmit=()=>{
-      console.log(state.form)
+      context.emit('handlePlan',state.form)
     };
     return {
       ...toRefs(state),
