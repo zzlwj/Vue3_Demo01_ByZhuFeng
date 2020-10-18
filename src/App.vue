@@ -14,19 +14,25 @@
         <a-menu-item key="/plan">
           <router-link to="/plan">时间计划</router-link>
         </a-menu-item>
-        <!-- <a-menu-item key="3">
-          nav 3
-        </a-menu-item> -->
       </a-menu>
     </a-layout-header>
     <a-layout-content style="padding: 0 50px">
       <a-breadcrumb style="margin: 16px 0">
-        <!-- <a-breadcrumb-item>Home</a-breadcrumb-item>
-        <a-breadcrumb-item>List</a-breadcrumb-item>
-        <a-breadcrumb-item>App</a-breadcrumb-item> -->
       </a-breadcrumb>
       <div :style="{ background: '#fff', padding: '24px', minHeight: '280px' }">
-        <router-view></router-view>
+
+        <a-row>
+          <a-col :span="6">
+            <a-card title="计划总用时:" style="width: 100%">
+              <p>总共计划时长是:{{allTime}}</p>
+            </a-card>
+          </a-col>
+
+          <a-col :span="16" :offset="2">
+            <router-view></router-view>
+          </a-col>
+        </a-row> 
+     
       </div>
     </a-layout-content>
     <a-layout-footer style="text-align: center">
@@ -36,34 +42,25 @@
 </template>
 <script>
 //compositionApi
-import {reactive,toRefs,watch,computed} from 'vue'
-import {useRoute} from 'vue-router'
+import {reactive,toRefs,watch,computed,ref} from 'vue';
+import {useRoute} from 'vue-router';
+import {useStore} from 'vuex';
 export default {
-  setup(props,context){ //context:attr slots emit
+  setup(props,context){ //context:attr slots emit 0
     //默认只执行一次
     const route=useRoute();
+    const store=useStore();
     const state=reactive({
-      // selectedKeys:['/','/plan']
-      // selectedKeys:[]
-      selectedKeys:[route.path]
+      selectedKeys:computed(()=>{
+        return [route.path];
+      }),
+      allTime:ref(store.getters.allTime), //单独将某个属性变成响应式的
     });
-
-    //watche 监控某个属性 computed
-    // watch(()=>route.path,(newValue)=>{
-    //   state.selectedKeys=[newValue]
-    // },{immediate:true})
-
-    // const selectedKeys=computed(()=>{
-    //   return [route.path];
-    // })
-
-    // setTimeout(()=>{
-    //   state.a=100;
-    // },1000)
-    console.log(toRefs(state))
+    // const allTime=ref(store.getters.allTime());
+    // console.log(allTime)
     return{
       ...toRefs(state), //保证数据是响应式的,还有解构的功能
-      // selectedKeys
+      // allTime
     }
   }
 };
